@@ -44,32 +44,21 @@ bool load_file(char* name, FILE** file, char* mode){
 
 
 int do_number(int* cifras, int n){
-  
     int number = 0;
     int digitos = 0;
-
-
     for(int i= 0; i < n ; i++ ){
       if(cifras[i] < 0 || 9 < cifras[i])break;
       digitos++;
     }
-
-
-
     for(int i = 0; i < digitos; i++){
-
         number += cifras[i];
         number *= 10;
-
     }
-
     return number/10;
-
 }   
 
 
 void print_number_list(FILE* file,int* vector, int n){
-
     for(int i = 0; i < n; i++){
         fprintf(file, "%d ",vector[i]);
     }
@@ -78,7 +67,7 @@ void print_number_list(FILE* file,int* vector, int n){
 
 
 int main(int argc, char* argv[]) {
-
+	printf("Hola");dasdas
     FILE* filein = NULL;
     FILE* fileout = NULL;
 
@@ -129,7 +118,11 @@ int main(int argc, char* argv[]) {
 
     /*****************************/
 
-
+	char** linea = NULL;
+	size_t* largo = 0;
+	getline(linea,largo,filein);
+	printf("La primera linea es: %s", *linea);
+	printf("Hola\n");
 	//Tomamos como hipotesis que, a lo sumo, puede haber 10000 numeros..
     int numeros_desordenados[10000];
 

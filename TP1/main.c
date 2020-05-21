@@ -67,7 +67,6 @@ void print_number_list(FILE* file,int* vector, int n){
 
 
 int main(int argc, char* argv[]) {
-	printf("Hola");dasdas
     FILE* filein = NULL;
     FILE* fileout = NULL;
 
@@ -120,11 +119,16 @@ int main(int argc, char* argv[]) {
 
 	char** linea = NULL;
 	size_t* largo = 0;
-	getline(linea,largo,filein);
-	printf("La primera linea es: %s", *linea);
-	printf("Hola\n");
-	//Tomamos como hipotesis que, a lo sumo, puede haber 10000 numeros..
-    int numeros_desordenados[10000];
+	size_t caracteres_leidos = getline(linea,largo,filein);
+	size_t largo_maximo = caracteres_leidos;
+	while(caracteres_leidos!= -1){
+		caracteres_leidos = getline(linea,largo,filein);
+		if(largo_maximo< caracteres_leidos){
+			largo_maximo = caracteres_leidos;
+		}
+	}
+	rewind(filein);
+    int numeros_desordenados[largo_maximo];
 
     // ..de maximo 50 digitos ( numero_leido < 10^50 ). 
     //Parametros del numero que se esta leyendo:

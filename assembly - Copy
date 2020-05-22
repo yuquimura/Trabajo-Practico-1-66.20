@@ -1,0 +1,256 @@
+//Armo Stack.
+addiu	sp,sp,-48
+ra,44(sp)
+s8,40(sp)
+s8,sp
+gp,16(sp)
+a0,48(s8)
+a1,52(s8)
+a2,56(s8)
+a3,60(s8)
+//int p1=0
+sw zero,24(s8)
+//int p2 = 0;
+zero,28(s8)
+//malloc
+lw	v1,52(s8)
+lw	v0,60(s8)
+addu	v0,v1,v0
+sll	v0,v0,0x2
+move	a0,v0
+lw	v0,-32616(gp)
+move	t9,v0
+jalr	t9
+nop
+lw	gp,16(s8)
+sw	v0,36(s8)
+//	for( int i = 0; i < n1 + n2 ; i++){
+sw	zero,32(s8)
+b	c18 <arr_merge+0x1a8>
+nop
+//Si la p1 alcanzo n1 entonces termine de iterar el primero vec
+lw	v1,24(s8)
+lw	v0,52(s8)
+bne	v1,v0,b28 <arr_merge+0xb8>
+nop
+//merged[i] = vector2[p2++];
+lw	v0,32(s8)
+sll	v0,v0,0x2
+lw	v1,36(s8)
+addu	v1,v1,v0
+lw	v0,28(s8)
+addiu	a0,v0,1
+sw	a0,28(s8)
+sll	v0,v0,0x2
+lw	a0,56(s8)
+addu	v0,a0,v0
+lw	v0,0(v0)
+sw	v0,0(v1)
+b	c0c <arr_merge+0x19c>
+nop
+//Si la p2 alcanzo n2 entonces termine de iterar el segundo vector
+lw	v1,28(s8)
+lw	v0,60(s8)
+bne	v1,v0,b70 <arr_merge+0x100>
+nop
+//merged[i] = vector1[p1++];
+lw	v0,32(s8)
+sll	v0,v0,0x2
+lw	v1,36(s8)
+addu	v1,v1,v0
+lw	v0,24(s8)
+addiu	a0,v0,1
+sw	a0,24(s8)
+sll	v0,v0,0x2
+lw	a0,48(s8)
+addu	v0,a0,v0
+lw	v0,0(v0)
+sw	v0,0(v1)
+b	c0c <arr_merge+0x19c>
+nop
+//}else if (vector1[p1] < vector2[p2]){
+lw	v0,24(s8)
+sll	v0,v0,0x2
+lw	v1,48(s8)
+addu	v0,v1,v0
+lw	v1,0(v0)
+lw	v0,28(s8)
+sll	v0,v0,0x2
+lw	a0,56(s8)
+addu	v0,a0,v0
+lw	v0,0(v0)
+slt	v0,v1,v0
+beqz	v0,bdc <arr_merge+0x16c>
+nop
+//merged[i] = vector1[p1++];
+lw	v0,32(s8)
+sll	v0,v0,0x2
+lw	v1,36(s8)
+addu	v1,v1,v0
+lw	v0,24(s8)
+addiu	a0,v0,1
+sw	a0,24(s8)
+sll	v0,v0,0x2
+lw	a0,48(s8)
+addu	v0,a0,v0
+lw	v0,0(v0)
+sw	v0,0(v1)
+b	c0c <arr_merge+0x19c>
+nop
+//}else{
+//merged[i] = vector2[p2++];
+lw	v0,32(s8)
+sll	v0,v0,0x2
+lw	v1,36(s8)
+addu	v1,v1,v0
+lw	v0,28(s8)
+addiu	a0,v0,1
+sw	a0,28(s8)
+sll	v0,v0,0x2
+lw	a0,56(s8)
+addu	v0,a0,v0
+lw	v0,0(v0)
+sw	v0,0(v1)
+//for( int i = 0; i < n1 + n2 ; i++){
+lw	v0,32(s8)
+addiu	v0,v0,1
+sw	v0,32(s8)
+lw	v1,52(s8)
+lw	v0,60(s8)
+addu	v1,v1,v0
+lw	v0,32(s8)
+sltu	v0,v0,v1
+bnez	v0,ae0 <arr_merge+0x70>
+nop
+//	return merged;
+lw	v0,36(s8)
+//}
+move	sp,s8
+lw	ra,44(sp)
+lw	s8,40(sp)
+addiu	sp,sp,48
+jr	ra
+nop
+//probar diferencias entre int* vector y int vector[]
+//int* merge_sort(int* vector, size_t n){
+lui	gp,0x2
+addiu	gp,gp,-28176
+addu	gp,gp,t9
+addiu	sp,sp,-56
+sw	ra,52(sp)
+sw	s8,48(sp)
+move	s8,sp
+sw	gp,16(sp)
+sw	a0,56(s8)
+sw	a1,60(s8)
+
+//Ordenar nada no sirve
+//	if ( n < 1 || !vector) return NULL;
+lw	v0,60(s8)
+beqz	v0,c90 <merge_sort+0x40>
+nop
+lw	v0,56(s8)
+bnez	v0,c9c <merge_sort+0x4c>
+nop
+move	v0,zero
+b	dac <merge_sort+0x15c>
+nop
+//Caso base, se devuelve un nuevo vector con el unico elem de entrada 
+//if ( n == 1 ){
+lw	v1,60(s8)
+li	v0,1
+bne	v1,v0,ce4 <merge_sort+0x94>
+nop
+
+//int* vector_ordenado = malloc(sizeof(int));
+li	a0,4
+lw	v0,-32616(gp)
+move	t9,v0
+jalr	t9
+nop
+lw	gp,16(s8)
+sw	v0,24(s8)
+//vector_ordenado[0] = vector[0];
+lw	v0,56(s8)
+lw	v1,0(v0)
+lw	v0,24(s8)
+sw	v1,0(v0)
+//return vector_ordenado;
+lw	v0,24(s8)
+b	dac <merge_sort+0x15c>
+nop
+//}
+
+//Dividimos el arreglo en do de tamaño n1 y n2 / n1 + n2 = n
+//size_t n1 = n/2;
+lw	v0,60(s8)
+srl	v0,v0,0x1
+sw	v0,28(s8)
+//size_t n2 = n-n1;
+lw	v1,60(s8)
+lw	v0,28(s8)
+subu	v0,v1,v0
+sw	v0,32(s8)
+
+	//Merge con las dos mitades
+	//"vector" si gue siendo un puntero a la primera posicion de la primera mitad
+	//"vector + n1" es un puntero a la primera posicion de la segunda mitad
+	//int* vector1_ord = merge_sort(vector, n1);
+lw	a1,28(s8)
+lw	a0,56(s8)
+lw	v0,-32716(gp)
+move	t9,v0
+bal	c50 <merge_sort>
+nop
+lw	gp,16(s8)
+sw	v0,36(s8)
+lw	v0,28(s8)
+sll	v0,v0,0x2
+lw	v1,56(s8)
+addu	v0,v1,v0
+lw	a1,32(s8)
+move	a0,v0
+lw	v0,-32716(gp)
+move	t9,v0
+bal	c50 <merge_sort>
+nop
+lw	gp,16(s8)
+sw	v0,40(s8)
+
+//Merge
+//int* vector_ordenado = arr_merge(vector1_ord,n1,vector2_ord,n2);
+lw	a3,32(s8)
+lw	a2,40(s8)
+lw	a1,28(s8)
+lw	a0,36(s8)
+lw	v0,-32712(gp)
+move	t9,v0
+bal	a70 <arr_merge>
+nop
+lw	gp,16(s8)
+sw	v0,44(s8)
+
+//Libero las dos mitades que ya no me sirven
+//free(vector1_ord);
+
+lw	a0,36(s8)
+lw	v0,-32608(gp)
+move	t9,v0
+jalr	t9
+nop
+lw	gp,16(s8)
+//free(vector2_ord);
+lw	a0,40(s8)
+lw	v0,-32608(gp)
+move	t9,v0
+jalr	t9
+nop
+lw	gp,16(s8)
+//return vector_ordenado;
+lw	v0,44(s8)
+move	sp,s8
+lw	ra,52(sp)
+lw	s8,48(sp)
+addiu	sp,sp,56
+jr	ra
+nop

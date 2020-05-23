@@ -39,16 +39,10 @@ arr_merge:
 	sw a1,52(sp)
 	sw a2,56(sp)
 	sw a3,60(sp)
-	
 
 	sw zero,24(sp) #int p1 = 0;
-	#lw t5,24(sp)    #t5 = p1;
 
 	sw zero,28(sp) #int p2 = 0;
-	#lw t6,28(sp)  #t6 = p2
-
-	#lw t3, 48(sp)   #t3 = vector1
-	#lw t8, 56(sp)   #t8 = vector2
 
 	#Agrego a a0 el valor de sizeof(int)* (n1 + n2)
 	lw t0,52(sp) #t0 = n1
@@ -74,7 +68,7 @@ arr_merge:
 loop:
     lw t1,24(sp) #t1 == p1
     lw t0,52(sp) #t0 == n1
-	beq t0,t1,if1 #p1 == n1
+	beq t0,t1,else #p1 == n1
 
     lw t1,28(sp) #t1 == p2
     lw t0,60(sp) #t0 == n2
@@ -91,16 +85,73 @@ loop:
 	add t2,t2,t1 #t2 += 4*p2
 	slt t1,t2,t0 #(t2?t0) 1:0
     subu t1,0x1,t1
-    beqz t1,if3
+    beqz t1,if2
 
+else:#Tambien funciona para el primer if
+    lw t0, 20(sp) #merged
+    lw t1, 16(sp) #i
+    lw t2, 56(sp) #vector2
+    lw t3, 28(sp) #p2
 
-	lw t8,0(t8) #Cargo el valor de t8 en t8
-	lw t6,0(t6) #Cargo el valor de t6 en t6
-	slt t8,t8,if3 #vector1[p1] == #vector2[p2]
+    sll t1,0x2 #i=4*i
+    add t0,t0,t1 #merged[i]
+    sll t3,0x2
+    add t2,t2,t3 #vector2[p2]
+    lw t2,0(t2) #cargo el valor
+    sw t0,0(t2) #guardo el valor
 
+    #actualizo i
+    lw t1, 16(sp) #i
+    addiu t1,0x1,t1 #Le sumo uno a i
+    sw t1, 16(sp) #guarde i actualizado
 
-	add t4,t4,1
-	blt t4,t1,loop
+    #actualizo p2
+    lw t1, 28(sp) #p2
+    addiu t1,0x1,t1 #Le sumo uno a p2
+    sw t1, 28(sp) #guarde p2 actualizado
+
+    #Veo si termine
+    lw t0,0(sp) #Vuelvo a cargar el a0 = 4*(n1+n2)
+    srl t0,0x2 #t2 = n1+n2
+
+    sw zero,16(sp) #i = 0
+    lw t2, 16(sp) #t2 = i
+    slt t1,t2,t0 #(t2?t0) 1:0
+    subu t1,0x1,t1
+    beqz t1,loop
+    nop
+    b end
+if2:
+    lw t0, 20(sp) #merged
+    lw t1, 16(sp) #i
+    lw t2, 48(sp) #vector1
+    lw t3, 24(sp) #p1
+
+    sll t1,0x2 #i=4*i
+    add t0,t0,t1 #merged[i]
+    sll t3,0x2
+    add t2,t2,t3 #vector1[p1]
+    lw t2,0(t2) #cargo el valor
+    sw t0,0(t2) #guardo el valor
+
+    #Actualizo valor de i
+    lw t1, 16(sp) #i
+    addiu t1,0x1,t1 #Le sumo uno a i
+    sw t1, 16(sp) #guarde i actualizado
+
+     #Actualizo valor de p1
+    lw t1, 24(sp) #p1
+    addiu t1,0x1,t1 #Le sumo uno a p1
+    sw t1, 24(sp) #guarde p1 actualizado
+
+    sw zero,16(sp) #i = 0
+    lw t2, 16(sp) #t2 = i
+    slt t1,t2,t0 #(t2?t0) 1:0
+    subu t1,0x1,t1
+    beqz t1,loop
+    nop
+    b end
+
 end:
 	ksjldjlkasjlkdsal
 	

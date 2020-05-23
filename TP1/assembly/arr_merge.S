@@ -42,38 +42,42 @@ arr_merge:
 	
 
 	sw zero,24(sp) #int p1 = 0;
-	lw t5,24(sp)    #t5 = p1;
+	#lw t5,24(sp)    #t5 = p1;
 
 	sw zero,28(sp) #int p2 = 0;
-	lw t6,28(sp)  #t6 = p2
+	#lw t6,28(sp)  #t6 = p2
 
-	lw t3, 48(sp)   #t3 = vector1
-	lw t8, 56(sp)   #t8 = vector2
+	#lw t3, 48(sp)   #t3 = vector1
+	#lw t8, 56(sp)   #t8 = vector2
 
 	#Agrego a a0 el valor de sizeof(int)* (n1 + n2)
 	lw t0,52(sp) #t0 = n1
 	lw t1,60(sp) #t1 = n2
-
-	add t2,t0,t1 #t2 = n1+n2
-
-	sll t2,0x2 #t2 = 4*(n1+n2)
+	add t0,t0,t1 #t0 = n1+n2
+	sll t0,0x2 #t0 = 4*(n1+n2)
 	
-	sw t2,0(sp)
+	sw t0,0(sp) $#a0 4*(n1+n2)
 	jal mymalloc
 
 	#Suponiendo que funciono como un campeon
-	sw v0,20(sp)
-	lw t7,20(sp) #t7 = direccion de memoria del malloc
-    srl t2,0x2 #t2 = n1+n2
+	sw v0,20(sp) #20(sp) = merged
+	lw t0,0(sp) #Vuelvo a cargar el a0 = 4*(n1+n2)
+    srl t0,0x2 #t2 = n1+n2
 
-	sw zero,16(sp) #i =0
-	add t4,zero,zero #t4 = i
-	blt t4,t2,loop  #i < t4 = i <n1+n2
+	sw zero,16(sp) #i = 0
+	lw t2, 16(sp) #t2 = i
+	slt t1,t2,t0 #(t2?t0) 1:0
+	subu t1,0x1,t1
+	beqz t1,loop
 	nop
 	b end
 loop:
-	beq t5,t0,if1 #p1 == n1
+    lw t1,24(sp) #t1 == p1
+    lw t0,52(sp) #t0 == n1
+	beq t0,t1,if1 #p1 == n1
 
+    lw t1,28(sp) #t1 == p1
+    lw t0,60(sp) #
 	beq t6,t1,if2  #p2 == n2
 
 	sll t5,0x2 #p1 = 4*p1
@@ -82,7 +86,7 @@ loop:
 	add t8,t8,t6
 	lw t8,0(t8) #Cargo el valor de t8 en t8
 	lw t6,0(t6) #Cargo el valor de t6 en t6
-	beq t8,t8,if3 #vector1[p1] == #vector2[p2]
+	slt t8,t8,if3 #vector1[p1] == #vector2[p2]
 
 
 	add t4,t4,1

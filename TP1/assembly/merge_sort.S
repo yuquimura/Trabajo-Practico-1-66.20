@@ -34,11 +34,8 @@
 merge_sort:
 	
 	############  Stackf$rame creation  ############
-	.frame 	$fp,56
-	subu 	$sp,$sp,56
 
-	#Building Saved Registers Area
-	.cprestore 40         # lo vi por ahi, no se si esta bien
+	subu 	$sp,$sp,56
 	sw		$fp,40($sp)
 	sw 		$gp,44($sp)
 	sw 		$ra,48($sp)

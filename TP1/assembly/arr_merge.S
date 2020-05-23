@@ -76,14 +76,24 @@ loop:
     lw t0,52(sp) #t0 == n1
 	beq t0,t1,if1 #p1 == n1
 
-    lw t1,28(sp) #t1 == p1
-    lw t0,60(sp) #
-	beq t6,t1,if2  #p2 == n2
+    lw t1,28(sp) #t1 == p2
+    lw t0,60(sp) #t0 == n2
+	beq t0,t1,if2  #p2 == n2
 
-	sll t5,0x2 #p1 = 4*p1
-	add t3,t3,t5 #t3 += 4*p1
-	sll t6,0x2 #p2 = 4*p2
-	add t8,t8,t6
+    lw t1,24(sp) #t1 == p1
+	sll t1,0x2 #p1 = 4*p1
+	lw t0,48(sp) #Cargo el vector en t0
+	add t0,t0,t1 #t0 += 4*p1
+
+	lw t1,28(sp) #t1 == p2
+	sll t1,0x2 #p2 = 4*p2
+	lw t2,56(sp) #t2 == vector2
+	add t2,t2,t1 #t2 += 4*p2
+	slt t1,t2,t0 #(t2?t0) 1:0
+    subu t1,0x1,t1
+    beqz t1,if3
+
+
 	lw t8,0(t8) #Cargo el valor de t8 en t8
 	lw t6,0(t6) #Cargo el valor de t6 en t6
 	slt t8,t8,if3 #vector1[p1] == #vector2[p2]

@@ -153,6 +153,8 @@ if2:
     b end
 
 end:
+    lw t0, 20(sp) #merged
+    sw t0, v0
 	move sp,fp
     lw fp,36(sp)
     lw gp,40(sp)

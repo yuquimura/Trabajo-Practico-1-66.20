@@ -34,7 +34,7 @@
 merge_sort:
 	
 	############  Stackf$rame creation  ############
-	.f$rame 	$fp,56
+	.frame 	$fp,56
 	subu 	$sp,$sp,56
 
 	#Building Saved Registers Area
@@ -44,13 +44,13 @@ merge_sort:
 	sw 		$ra,48($sp)
 
 	# Save arguments on caller's ABA
-	sw 		$a0,$sp(56)
-	sw		$a1,$sp(60)
+	sw 		$a0,56(sp)
+	sw		$a1,960(sp)
 
 	############  Mergesort  ############
 
 	#Set the return to NULL
-	addu 	v0,$zero,$zero
+	addu 	$v0,$zero,$zero
 	
 	#If there are nothing to do, return
 	beq 	$a0, $zero, return
@@ -59,7 +59,7 @@ merge_sort:
 	nop
 
 	#If n=1 go to caso_base
-	addiu 	$t0, 1,	$zero
+	addiu 	$t0,$zero,1
 	beq 	$a1, $t0, caso_base
 	nop
 
@@ -79,7 +79,7 @@ merge_sort:
 	move	$a0, $t3 	 			
 	move	$a1, $t1				
 	jal 	merge_sort 			# Llamado recursivo
-	sw 		v0, 16($fp)			# Almaceno retorno (dir. a la prime$ra mitad ordenada)
+	sw 		$v0, 16($fp)			# Almaceno retorno (dir. a la prime$ra mitad ordenada)
 
 
 	#Second recursive call
@@ -89,7 +89,7 @@ merge_sort:
 	move	$a0, $t3 	 			
 	move	$a1, $t2	
 	jal 	merge_sort
-	sw 		v0, 20($fp)	 		# Almaceno retorno (dir. a la prime$ra segunda ordenada)
+	sw 		$v0, 20($fp)	 		# Almaceno retorno (dir. a la prime$ra segunda ordenada)
 
 
 	#Merge
@@ -99,7 +99,7 @@ merge_sort:
 	move 	$a3,	$t2				# $a3 = largo segunda mitad
 	jal		arr_merge
 	nop
-	sw 		v0, 32($fp)			# Vector final ordenado
+	sw 		$v0, 32($fp)			# Vector final ordenado
 
 
 	#Free 
@@ -109,18 +109,18 @@ merge_sort:
 	jal		myfree
 
 	#Set return variable
-	lw 		v0, 40($fp)
+	lw 		$v0, 40($fp)
 	b 		return
 	nop
 
 caso_base:
 	
-	addiu	$a0,4,$zero			# $a0 = 4
+	addiu	$a0,$zero,4			# $a0 = 4
 	jal 	mymalloc  			# v0 = direecion del nuevo vector
 
 	lw		$t0,56($sp)			# $t0 = direccion del vector
 	lw 		$t1,0($t0)			# $t1 = elemento del vector
-	sw 		$t1,0(v0)			# Se almacena el elemento en el nuevo vector
+	sw 		$t1,0($v0)			# Se almacena el elemento en el nuevo vector
 
 return:
 	
@@ -186,11 +186,11 @@ arr_merge:
 	add $t0,$t0,$t1 #$t0 = n1+n2
 	sll $t0,0x2 #$t0 = 4*(n1+n2)
 	
-	sw $t0,0($sp) $#$a0 4*(n1+n2)
+	sw $t0,0($sp)#$a0 4*(n1+n2)
 	jal mymalloc
 
 	#Suponiendo que funciono como un campeon
-	sw v0,20($sp) #20($sp) = merged
+	sw $v0,20($sp) #20($sp) = merged
 	lw $t0,0($sp) #Vuelvo a cargar el $a0 = 4*(n1+n2)
     srl $t0,0x2 #$t2 = n1+n2
 

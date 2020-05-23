@@ -41,8 +41,8 @@ merge_sort:
 	sw 		$ra,48($sp)
 
 	# Save arguments on caller's ABA
-	sw 		$a0,56(sp)
-	sw		$a1,960(sp)
+	sw 		$a0,56($sp)
+	sw		$a1,60($sp)
 
 	############  Mergesort  ############
 
@@ -76,7 +76,7 @@ merge_sort:
 	move	$a0, $t3 	 			
 	move	$a1, $t1				
 	jal 	merge_sort 			# Llamado recursivo
-	sw 		$v0, 16($fp)			# Almaceno retorno (dir. a la prime$ra mitad ordenada)
+	sw 		$v0, 16($fp)		# Almaceno retorno (dir. a la prime$ra mitad ordenada)
 
 
 	#Second recursive call
@@ -86,7 +86,7 @@ merge_sort:
 	move	$a0, $t3 	 			
 	move	$a1, $t2	
 	jal 	merge_sort
-	sw 		$v0, 20($fp)	 		# Almaceno retorno (dir. a la prime$ra segunda ordenada)
+	sw 		$v0, 20($fp)	 	# Almaceno retorno (dir. a la prime$ra segunda ordenada)
 
 
 	#Merge

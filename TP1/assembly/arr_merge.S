@@ -153,8 +153,14 @@ if2:
     b end
 
 end:
-	ksjldjlkasjlkdsal
-	
+	move sp,fp
+    lw fp,36(sp)
+    lw gp,40(sp)
+    lw ra,44(sp)
+    addu sp,sp,48
+    jr ra
+
+.end arr_merge
 	
 	
 	

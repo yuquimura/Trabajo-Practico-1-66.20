@@ -3,10 +3,10 @@
 .align 2
 .globl arr_merge
 .ent arr_merge
-#a3	#
-#a2	#
-#a1	#
-#a0	#
+#$a3	#
+#$a2	#
+#$a1	#
+#$a0	#
 #########
 #///////#44
 #$ra	    #40
@@ -18,10 +18,10 @@
 #merged #20
 #i	    #16
 #########
-#a3	#12
-#a2	#8
-#a1	#4
-#a0	#0
+#$a3	#12
+#$a2	#8
+#$a1	#4
+#$a0	#0
 #########
 
 #int* arr_merge(int* vector1, size_t n1, int* vector2, size_t n2)
@@ -35,33 +35,33 @@ arr_merge:
 	move $fp,$sp
 
 	#Argument Area
-	sw a0,48($sp)
-	sw a1,52($sp)
-	sw a2,56($sp)
-	sw a3,60($sp)
+	sw $a0,48($sp)
+	sw $a1,52($sp)
+	sw $a2,56($sp)
+	sw $a3,60($sp)
 
-	sw zero,24($sp) #int p1 = 0;
+	sw $zero,24($sp) #int p1 = 0;
 
-	sw zero,28($sp) #int p2 = 0;
+	sw $zero,28($sp) #int p2 = 0;
 
-	#Agrego a a0 el valor de sizeof(int)* (n1 + n2)
+	#Agrego a $a0 el valor de sizeof(int)* (n1 + n2)
 	lw $t0,52($sp) #$t0 = n1
 	lw $t1,60($sp) #$t1 = n2
 	add $t0,$t0,$t1 #$t0 = n1+n2
 	sll $t0,0x2 #$t0 = 4*(n1+n2)
 	
-	sw $t0,0($sp) $#a0 4*(n1+n2)
+	sw $t0,0($sp) $#$a0 4*(n1+n2)
 	jal mymalloc
 
 	#Suponiendo que funciono como un campeon
 	sw v0,20($sp) #20($sp) = merged
-	lw $t0,0($sp) #Vuelvo a cargar el a0 = 4*(n1+n2)
+	lw $t0,0($sp) #Vuelvo a cargar el $a0 = 4*(n1+n2)
     srl $t0,0x2 #$t2 = n1+n2
 
-	sw zero,16($sp) #i = 0
+	sw $zero,16($sp) #i = 0
 	lw $t2, 16($sp) #$t2 = i
 	slt $t1,$t2,$t0 #($t2?$t0) 1:0
-	subu $t1,0x1,$t1
+	subu $t1,$t1,1
 	beqz $t1,loop
 	nop
 	b end
@@ -84,7 +84,7 @@ loop:
 	lw $t2,56($sp) #$t2 == vector2
 	add $t2,$t2,$t1 #$t2 += 4*p2
 	slt $t1,$t2,$t0 #($t2?$t0) 1:0
-    subu $t1,0x1,$t1
+    subu $t1,$t1,1
     beqz $t1,if2
 
 else:#Tambien funciona pa$ra el primer if
@@ -102,22 +102,22 @@ else:#Tambien funciona pa$ra el primer if
 
     #actualizo i
     lw $t1, 16($sp) #i
-    addiu $t1,0x1,$t1 #Le sumo uno a i
+    addiu $t1,$t1,1 #Le sumo uno a i
     sw $t1, 16($sp) #guarde i actualizado
 
     #actualizo p2
     lw $t1, 28($sp) #p2
-    addiu $t1,0x1,$t1 #Le sumo uno a p2
+    addiu $t1,$t1,1 #Le sumo uno a p2
     sw $t1, 28($sp) #guarde p2 actualizado
 
     #Veo si termine
-    lw $t0,0($sp) #Vuelvo a cargar el a0 = 4*(n1+n2)
+    lw $t0,0($sp) #Vuelvo a cargar el $a0 = 4*(n1+n2)
     srl $t0,0x2 #$t2 = n1+n2
 
-    sw zero,16($sp) #i = 0
+    sw $zero,16($sp) #i = 0
     lw $t2, 16($sp) #$t2 = i
     slt $t1,$t2,$t0 #($t2?$t0) 1:0
-    subu $t1,0x1,$t1
+    subu $t1,$t1,1
     beqz $t1,loop
     nop
     b end
@@ -136,18 +136,18 @@ if2:
 
     #Actualizo valor de i
     lw $t1, 16($sp) #i
-    addiu $t1,0x1,$t1 #Le sumo uno a i
+    addiu $t1,$t1,1 #Le sumo uno a i
     sw $t1, 16($sp) #guarde i actualizado
 
      #Actualizo valor de p1
     lw $t1, 24($sp) #p1
-    addiu $t1,0x1,$t1 #Le sumo uno a p1
+    addiu $t1,$t1,1 #Le sumo uno a p1
     sw $t1, 24($sp) #guarde p1 actualizado
 
-    sw zero,16($sp) #i = 0
+    sw $zero,16($sp) #i = 0
     lw $t2, 16($sp) #$t2 = i
     slt $t1,$t2,$t0 #($t2?$t0) 1:0
-    subu $t1,0x1,$t1
+    subu $t1,$t1,1
     beqz $t1,loop
     nop
     b end

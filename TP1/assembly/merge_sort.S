@@ -39,8 +39,8 @@ merge_sort:
 	sw		$fp,40($sp)
 	sw 		$gp,44($sp)
 	sw 		$ra,48($sp)
-
     move    $fp,$sp
+
 	# Save arguments on caller's ABA
 	sw 		$a0,56($sp)
 	sw		$a1,60($sp)
@@ -63,8 +63,8 @@ merge_sort:
 
 	
 	#Initialice local variables
-	lw		$t0, 60($fp)			# $t0 = largo del vector original
-	divu	$t1, $t0, 2			# $t1 = largo de la prime$ra mitad
+	lw		$t0, 60($sp)			# $t0 = largo del vector original
+	divu	$t1, $t0, 2			    # $t1 = largo de la primera mitad
 	subu	$t2, $t0, $t1     		# $t2 = largo de la segunda mitad
 
 	sw		$t1, 24($fp)			#Guardo variables locales en memoria	
@@ -72,31 +72,31 @@ merge_sort:
 
 
 	#First recursive call
-	lw    	$t3, 56($fp)			# $t3 = direccion de la prime$ra mitad
-
-	move	$a0, $t3 	 			
-	move	$a1, $t1
+	lw    	$a0, 56($fp)			# $t3 = direccion de la primera mitad
+	lw      $a1, 24($sp)
 	la      $t7,merge_sort
-	jalr	$t7				# Llamado recursivo
-	sw 		$v0, 16($fp)		# Almaceno retorno (dir. a la prime$ra mitad ordenada)
+	jalr	$t7				    # Llamado recursivo
+	sw 		$v0, 16($fp)		# Almaceno retorno (dir. a la primera mitad ordenada)
 
 
 	#Second recursive call
-	sll 	$t4, $t1, 2			# $t4 = $t1*4  (tamaño en bytes de la prime$ra mitad)
-	addu 	$t3, $t3, $t4			# $t3 = direccion de la segunda mitad  	
 
-	move	$a0, $t3 	 			
-	move	$a1, $t2
+	lw      $t1, 24($sp)
+	sll 	$t1, $t1, 2			# $t1 = $t1*4  (tamaño en bytes de la primera mitad)
+	lw      $a0, 56($sp)
+	addu 	$a0, $a0, $t1		# $t2 = direccion de la segunda mitad
+
+ 	lw      $a1,28($sp)
 	la      $t7,merge_sort
 	jalr	$t7		
-	sw 		$v0, 20($fp)	 	# Almaceno retorno (dir. a la prime$ra segunda ordenada)
+	sw 		$v0, 20($fp)	 	# Almaceno retorno (dir. a la segunda direccion ordenada)
 
 
 	#Merge
-	lw		$a0, 24($fp)			# $a0 = prime$ra mitad ordenada
-	move 	$a1, $t1 				# $a1 = largo prime$ra mitad
-	lw		$a2, 28($fp)			# $a2 = segunda mitad ordenada
-	move 	$a3,$t2				# $a3 = largo segunda mitad
+	lw		$a0, 16($fp)			# $a0 = primera mitad ordenada
+	lw   	$a1, 24($fp) 			# $a1 = largo primera mitad
+	lw		$a2, 20($fp)			# $a2 = segunda mitad ordenada
+	lw 	    $a3, 28($fp)				# $a3 = largo segunda mitad
 	la      $t7,arr_merge
 	jalr	$t7
 	nop
@@ -104,10 +104,10 @@ merge_sort:
 
 
 	#Free 
-	lw		$a0, 24($fp)
+	lw		$a0, 16($fp)
 	la      $t7,myfree
 	jalr	$t7
-	lw		$a0, 28($fp)
+	lw		$a0, 20($fp)
 	la      $t7,myfree
 	jalr	$t7
 
@@ -120,19 +120,20 @@ caso_base:
 	
 	addiu	$a0,$zero,4			# $a0 = 4
 	la      $t7,mymalloc
-	jalr	$t7			# v0 = direecion del nuevo vector
+	jalr	$t7			        # v0 = direcion del nuevo vector
 
 	lw		$t0,56($sp)			# $t0 = direccion del vector
-	la 		$t1,0($t0)			# $t1 = elemento del vector
+	lw		$t1,0($t0)			# $t1 = elemento del vector
 	sw 		$t1,0($v0)			# Se almacena el elemento en el nuevo vector
 
 return:
 	
 	# Unwinding stack
+	move    $sp,$fp #CHEQUEAR
 	lw		$fp,40($sp)
 	lw		$gp,44($sp)
 	lw		$ra,48($sp)
-    move    $sp,$fp
+	addu    $sp,$sp,56
 	jr $ra
 
 	.end merge_sort
@@ -149,10 +150,10 @@ return:
 #$a0	#
 #########
 #///////#44
-#$ra	    #40
-#$gp	    #36
-#$fp	    #32
-#########
+#$ra	#40
+#$gp	#36
+#$fp	#32
+###########
 #p1	    #28
 #p2	    #24
 #merged #20

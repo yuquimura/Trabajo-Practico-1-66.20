@@ -93,8 +93,9 @@ merge_sort:
 	lw		$a0, 24($fp)			# $a0 = prime$ra mitad ordenada
 	move 	$a1, $t1 				# $a1 = largo prime$ra mitad
 	lw		$a2, 28($fp)			# $a2 = segunda mitad ordenada
-	move 	$a3,	$t2				# $a3 = largo segunda mitad
-	jal		arr_merge
+	move 	$a3,$t2				# $a3 = largo segunda mitad
+	la      $t7,arr_merge
+	jalr	arr_merge
 	nop
 	sw 		$v0, 32($fp)			# Vector final ordenado
 
@@ -287,7 +288,7 @@ if2:
 
 end:
     lw $t0, 20($sp) #merged
-    sw $t0, $v0
+    sw $t0, 0($v0)
 	move $sp,$fp
     lw $fp,36($sp)
     lw $gp,40($sp)

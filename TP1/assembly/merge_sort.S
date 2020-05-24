@@ -107,7 +107,7 @@ merge_sort:
 	jal		myfree
 
 	#Set return variable
-	lw 		$v0, 40($fp)
+	lw 		$v0, 32($fp)
 	b 		return
 	nop
 

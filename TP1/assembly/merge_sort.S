@@ -74,8 +74,9 @@ merge_sort:
 	lw    	$t3, 56($fp)			# $t3 = direccion de la prime$ra mitad
 
 	move	$a0, $t3 	 			
-	move	$a1, $t1				
-	jal 	merge_sort 			# Llamado recursivo
+	move	$a1, $t1
+	la      $t7,merge_sort
+	jalr	$t7				# Llamado recursivo
 	sw 		$v0, 16($fp)		# Almaceno retorno (dir. a la prime$ra mitad ordenada)
 
 
@@ -84,8 +85,9 @@ merge_sort:
 	addu 	$t3, $t3, $t4			# $t3 = direccion de la segunda mitad  	
 
 	move	$a0, $t3 	 			
-	move	$a1, $t2	
-	jal 	merge_sort
+	move	$a1, $t2
+	la      $t7,merge_sort
+	jalr	$t7		
 	sw 		$v0, 20($fp)	 	# Almaceno retorno (dir. a la prime$ra segunda ordenada)
 
 
@@ -95,16 +97,18 @@ merge_sort:
 	lw		$a2, 28($fp)			# $a2 = segunda mitad ordenada
 	move 	$a3,$t2				# $a3 = largo segunda mitad
 	la      $t7,arr_merge
-	jalr	arr_merge
+	jalr	$t7
 	nop
 	sw 		$v0, 32($fp)			# Vector final ordenado
 
 
 	#Free 
 	lw		$a0, 24($fp)
-	jal		myfree
+	la      $t7,myfree
+	jalr	$t7
 	lw		$a0, 28($fp)
-	jal		myfree
+	la      $t7,myfree
+	jalr	$t7
 
 	#Set return variable
 	lw 		$v0, 32($fp)
@@ -114,10 +118,11 @@ merge_sort:
 caso_base:
 	
 	addiu	$a0,$zero,4			# $a0 = 4
-	jal 	mymalloc  			# v0 = direecion del nuevo vector
+	la      $t7,mymalloc
+	jalr	$t7			# v0 = direecion del nuevo vector
 
 	lw		$t0,56($sp)			# $t0 = direccion del vector
-	lw 		$t1,0($t0)			# $t1 = elemento del vector
+	la 		$t1,0($t0)			# $t1 = elemento del vector
 	sw 		$t1,0($v0)			# Se almacena el elemento en el nuevo vector
 
 return:
@@ -185,7 +190,9 @@ arr_merge:
 	sll $t0,0x2 #$t0 = 4*(n1+n2)
 	
 	sw $t0,0($sp)#$a0 4*(n1+n2)
-	jal mymalloc
+
+	la      $t7,mymalloc
+	jalr	$t7
 
 	#Suponiendo que funciono como un campeon
 	sw $v0,20($sp) #20($sp) = merged

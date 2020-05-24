@@ -40,6 +40,7 @@ merge_sort:
 	sw 		$gp,44($sp)
 	sw 		$ra,48($sp)
 
+    move    $fp,$sp
 	# Save arguments on caller's ABA
 	sw 		$a0,56($sp)
 	sw		$a1,60($sp)
@@ -131,7 +132,7 @@ return:
 	lw		$fp,40($sp)
 	lw		$gp,44($sp)
 	lw		$ra,48($sp)
-
+    move    $sp,$fp
 	jr $ra
 
 	.end merge_sort
